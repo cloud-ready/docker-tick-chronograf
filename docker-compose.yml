@@ -1,0 +1,40 @@
+version: '2.1'
+services:
+  tick-chronograf:
+    container_name: ${CONTAINER_HOST_NAME:-standalone.tick}-chronograf
+    hostname: ${CONTAINER_HOST_NAME:-standalone.tick}-chronograf
+    image: ${IMAGE_NAME:-chronograf}:${IMAGE_TAG:-1.7.2}
+    environment:
+      #RESOURCES_PATH: "/usr/share/chronograf/resources"
+      INFLUXDB_URL: http://${CONTAINER_HOST_NAME:-standalone.tick}-influxdb:${INFLUXDB_HTTP_API_PORT:-8086}
+      KAPACITOR_URL: http://${CONTAINER_HOST_NAME:-standalone.tick}-kapacitor:${KAPACITOR_PORT:-9092}
+    networks:
+      local-network:
+        ipv4_address: 172.16.238.82
+        #ipv6_address: 2001:3984:3989::82
+    ports:
+    - "${EXTERNAL_CHRONOGRAF_PORT:-8083}:${CHRONOGRAF_PORT:-8888}"
+    restart: always
+    volumes:
+    - chronograf_data:/var/lib/chronograf
+
+
+networks:
+  local-network:
+    external: true
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      #- subnet: 2001:3984:3989::/64
+
+
+volumes:
+  chronograf_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/var/lib/chronograf
+      o: bind
