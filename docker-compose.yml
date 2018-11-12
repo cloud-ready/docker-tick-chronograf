@@ -3,9 +3,9 @@ services:
   tick-chronograf:
     container_name: ${CONTAINER_HOST_NAME:-standalone.tick}-chronograf
     environment:
-      #RESOURCES_PATH: "/usr/share/chronograf/resources"
       INFLUXDB_URL: http://${CONTAINER_HOST_NAME:-standalone.tick}-influxdb:${INFLUXDB_HTTP_API_PORT:-8086}
       KAPACITOR_URL: http://${CONTAINER_HOST_NAME:-standalone.tick}-kapacitor:${KAPACITOR_PORT:-9092}
+      #RESOURCES_PATH: "/usr/share/chronograf/resources"
     hostname: ${CONTAINER_HOST_NAME:-standalone.tick}-chronograf
     image: ${IMAGE_NAME:-chronograf}:${IMAGE_TAG:-1.7.2}
     labels:
